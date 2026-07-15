@@ -4,7 +4,7 @@ This project remaps keys to minimize hand movement and improve the touch-typing 
 
 ### **Core Remappings (Global)**
 
-![Remappings for comma and capslock triggers](images/comma_&_capslock_remappings.jpg)
+![Remappings for comma and capslock triggers](images/comma_caps_period_layers.jpg)
 
 ---
 
