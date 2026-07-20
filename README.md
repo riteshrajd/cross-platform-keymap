@@ -1,8 +1,12 @@
-# ⌨️ Key Remapper for a Better Typing Experience
+# ⌨️ Cross-Platform Keymap — Reduce Hand Movement While Typing
 
-This project remaps keys to minimize hand movement and improve the touch-typing experience. By using trigger keys (`capslock`, `,`, `.`), you can access all special symbols, navigation, numpad functionality, and **mouse controls** directly from the three main alphabet rows, eliminating the need to reach for other keys (except for standard Ctrl/Shift/Alt/Win combos).
+A keymap and cross-platform setup guide to remap your keyboard so that symbols, navigation, numpad, and even mouse control are all accessible from the home rows — without reaching for other keys.
 
-### **Core Remappings (Global)**
+It works by using `capslock`, `,`, and `.` as trigger keys. Hold one down, and the letter keys temporarily turn into symbols, arrow keys, numpad, or mouse controls. Standard Ctrl/Shift/Alt/Win combos are untouched.
+
+This repo provides the config files and instructions to set this up using **Kanata**, **AutoHotkey**, **Karabiner**, or an included **Python script** — pick whichever fits your OS and workflow.
+
+### Core Remappings (Global)
 
 ![Remappings for comma and capslock triggers](images/comma_caps_period_layers.jpg)
 
@@ -10,266 +14,195 @@ This project remaps keys to minimize hand movement and improve the touch-typing 
 
 ## 🟩 Installation
 
-This key remapper is available for Windows (AutoHotkey) and Linux (Kanata or Python).
-
-Here is the completely revamped **macOS** section. It is formatted to match the style of your Linux section, with clear steps, copy-paste terminal commands, and the specific details you requested.
-
-You can replace your current "Kanata Setup Guide for macOS" section with this block:
+Available for Windows (AutoHotkey), macOS (Kanata), and Linux (Kanata or Python).
 
 ---
 
-### 🍎 macOS Method: Kanata (Recommended)
+### 🍎 macOS: Kanata (Recommended)
 
 **Best for:** Native performance and deep system integration.
 
-This configuration uses **Kanata** to mimic advanced keyboard layers. It requires the **Karabiner Driver** to inject keystrokes, but runs independently of the Karabiner app.
+This uses **Kanata** to run the keyboard layers. It requires the **Karabiner Driver** to inject keystrokes, but runs independently of the Karabiner app itself.
 
-#### **1. Prerequisites: The Driver**
+#### 1. Prerequisites: The Driver
 
-1. Download and install **[Karabiner-Elements](https://karabiner-elements.pqrs.org/)**.
+1. Download and install [Karabiner-Elements](https://karabiner-elements.pqrs.org/).
 2. Open the app once to ensure the extension (`Karabiner-DriverKit-VirtualHIDDevice`) is approved in **System Settings > Privacy & Security**.
-3. **Critical:** Fully **QUIT** the Karabiner-Elements app (Cmd+Q) and ensure it is not running in the menu bar. We only need the *driver* installed, not the app itself.
+3. **Critical:** Fully quit Karabiner-Elements (Cmd+Q) and make sure it isn't running in the menu bar. Only the driver needs to stay installed — not the app.
 
-#### **2. Quick Setup (Terminal)**
+#### 2. Quick Setup (Terminal)
 
-Open your terminal inside the `mac_kanata` folder of this repository and run these commands:
+Open a terminal inside the `mac_kanata` folder of this repo and run:
 
 ```bash
-# 1. Install Kanata (Downloads the binary & moves it to your path)
+# 1. Install Kanata
 curl -L -o kanata https://github.com/jtroo/kanata/releases/latest/download/kanata_macos_arm64
 chmod +x kanata
 sudo mv kanata /usr/local/bin/
 
-# 2. Setup the Configuration Directory
+# 2. Set up the config directory
 mkdir -p ~/.config/kanata
 
-# 3. Copy the config file from this folder to the config directory
+# 3. Copy the config file into place
 cp config.kbd ~/.config/kanata/config.kbd
 
-# 4. Run Kanata!
+# 4. Run Kanata
 sudo kanata --cfg ~/.config/kanata/config.kbd
-
 ```
 
-*Note: When you run step 4, macOS will ask for "Input Monitoring" permissions. Allow it for **Terminal** (or `kanata`), then run the command again.*
+*Note: macOS will prompt for "Input Monitoring" permissions on first run. Allow it for Terminal (or `kanata`), then re-run the command.*
 
-#### **3. Controls & Layers**
+#### 3. Controls & Layers
 
-* **Top Row Behavior:**
-* **Default:** The top row acts as **Media/Special Keys** (Brightness, Spotlight, Mission Control, Volume, etc.).
-* *Note: F5 and F6 remain as standard function keys.*
+- **Top row default:** Media/Special keys (Brightness, Spotlight, Mission Control, Volume, etc.) — F5/F6 stay as standard function keys.
+- **Hold CapsLock:** Top row temporarily becomes standard F1–F12.
+- **Caps Lock logic:**
+  - Tap (<200ms): toggles normal Caps Lock.
+  - Hold (>200ms) or combo: activates the Symbols Layer and switches the top row to F-keys.
 
+#### 4. Troubleshooting
 
-* **Hold CapsLock:** The top row temporarily becomes standard **F1 - F12** keys.
-
-
-* **Caps Lock Logic:**
-* **Tap (<200ms):** Toggles standard Caps Lock.
-* **Hold (>200ms) OR Combo:** Activates the **Symbols Layer** and transforms the top row into F-keys.
-* *If you press any other key while holding Caps Lock (even for 10ms), it immediately switches to the layer.*
-
-
-
-#### **4. Troubleshooting**
-
-**Error: "Exclusive access and device already open"**
-This means the Karabiner app is still running in the background and fighting Kanata for control. Run this command to force-kill it:
+**"Exclusive access and device already open"** — Karabiner's app is still running and fighting Kanata for control. Force-kill it:
 
 ```bash
 sudo pkill -9 -f karabiner
-
 ```
 
-**How to Update Config**
-If you modify the `config.kbd` file, simply press `Ctrl+C` in your terminal to stop Kanata, then run the start command again to reload it.
+**Updating the config** — Edit `config.kbd`, press `Ctrl+C` to stop Kanata, then re-run the start command to reload.
 
-**⚠️ Force Quit:** If something goes wrong, press `LeftCtrl + Space + Esc` or `Ctrl+C`to instantly kill Kanata and restore your normal keyboard.
+**Force quit** — `LeftCtrl + Space + Esc` or `Ctrl+C` instantly kills Kanata and restores your normal keyboard.
 
 ---
 
 ### 🐧 Linux Method 1: Kanata (Recommended)
-**Best for:** Performance, gaming, and Online Assessments (Undetectable). Runs at the kernel level.
 
-**Quick Setup (Fedora/Debian/Arch)**
-Copy and paste this entire block into your terminal. It will download the necessary files (the app and your config) to a `~/kanata` folder and run it immediately. No git cloning required.
+**Best for:** Performance, gaming, and online assessments (runs at the kernel level, undetectable by userspace apps).
+
+Paste this into your terminal — it downloads the binary and config to `~/kanata` and runs it immediately, no git clone needed:
 
 ```bash
-# 1. Create a folder to store Kanata and the Config
+# 1. Create a folder for Kanata and the config
 mkdir -p ~/kanata
 
-# 2. Download the Kanata binary and the Configuration file
-wget [https://github.com/jtroo/kanata/releases/download/v1.6.1/kanata](https://github.com/jtroo/kanata/releases/download/v1.6.1/kanata] -O ~/kanata/kanata
-wget [https://raw.githubusercontent.com/riteshrajd/AHK/main/kanata/config.kbd](https://raw.githubusercontent.com/riteshrajd/AHK/main/kanata/config.kbd] -O ~/kanata/config.kbd
+# 2. Download the binary and config file
+wget https://github.com/jtroo/kanata/releases/download/v1.6.1/kanata -O ~/kanata/kanata
+wget https://raw.githubusercontent.com/riteshrajd/AHK/main/kanata/config.kbd -O ~/kanata/config.kbd
 chmod +x ~/kanata/kanata
 
-# 3. Setup permissions (uinput) so it runs smoothly
-# (This allows Kanata to create a virtual keyboard)
+# 3. Set up uinput permissions (lets Kanata create a virtual keyboard)
 sudo groupadd uinput
 sudo usermod -aG uinput $USER
 echo 'KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"' | sudo tee /etc/udev/rules.d/99-input.rules
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
-# 4. Run it! 
-# (Keep this terminal open while you want the remappings active)
+# 4. Run it (keep this terminal open while active)
 sudo ~/kanata/kanata -c ~/kanata/config.kbd
-
 ```
 
-**To Stop the script**
-```bash
-# Option 1: If you are looking at the running terminal
-# Just press Ctrl + C on your keyboard.
+**To stop:** `Ctrl+C` in the running terminal, or from a new tab: `sudo pkill kanata`
 
-# Option 2: Run this command in a NEW terminal tab to kill it instantly
-sudo pkill kanata
-```
+---
 
 ### 🐧 Linux Method 2: Python Script (Legacy)
 
-The Python script uses the `evdev` library to intercept and inject input events. Good for quick testing if you don't want to download binaries.
+Uses the `evdev` library to intercept and inject input events. Good for quick testing without downloading binaries.
 
-1. **Install the Dependency**: The script requires the `evdev` Python library.
-```bash
-# Fedora
-sudo dnf install python3-evdev
-# OR via pip (globally or in a venv)
-sudo pip install evdev
+1. **Install the dependency:**
+   ```bash
+   # Fedora
+   sudo dnf install python3-evdev
+   # or via pip
+   sudo pip install evdev
+   ```
+2. **Run the script** (must be run as root to grab the input device):
+   ```bash
+   sudo python3 key_remapper.py
+   ```
+3. **(Optional) Run on startup:** create a systemd service or add a sudo-enabled startup command.
 
-```
-
-2. **Run the Script**: Navigate to the repository folder and run the script with `sudo`:
-```bash
-sudo python3 key_remapper.py
-
-```
-
-
-*Note: The script must be run as root to grab the input device successfully.*
-3. **(Optional) Run on Startup**: To run this automatically, you will need to create a systemd service or add a sudo-enabled command to your startup applications.
-
+---
 
 ### 🪟 Windows
 
+1. Install [AutoHotkey](https://www.autohotkey.com/).
+2. Download the `.ahk` files and run them in this order:
+   1. `, . caps.ahk`
+   2. `num_pad_handling.ahk`
 
-1. 💾 **Install AHK**: Download and install AutoHotkey from the official [AutoHotkey website](https://www.autohotkey.com/).
-2. 📥 **Run the Scripts**: Download all the `.ahk` files and run them in the following order by double-clicking them:
-1. `first > , . caps.ahk`
-2. `then > num_pad_handling.ahk`
-
-
-
-You are now good to go!
+You're set.
 
 ---
 
 ## ❓ How to Disable / Toggle
 
-#### **Linux (Kanata)**
+**Linux (Kanata):** `Ctrl+C` in the running terminal, or `sudo pkill kanata`
 
-* Press `Ctrl+C` in the terminal window running Kanata.
-* If running in background: `sudo pkill kanata`
+**Linux (Python):** `Ctrl+C` in the terminal, or `sudo pkill -f key_remapper.py`
 
-#### **Linux (Python)**
-
-* **To Disable**: The script runs in your terminal. simply press `Ctrl+C` to stop it safely. The keyboard will return to normal immediately.
-* **If running in background**:
-```bash
-sudo pkill -f key_remapper.py
-
-```
-
-
-
-#### **Windows**
-
-* The remappings can be toggled on and off from the Windows taskbar. Go to the system tray, right-click the green 'H' hotkey icons, and select "Pause Script" or "Exit."
+**Windows:** Right-click the green 'H' icon in the system tray, then "Pause Script" or "Exit."
 
 ---
 
 ## 🔵 Remappings
 
-The keys `,`, `.`, and `capslock` are **trigger keys**. When you hold one of them down, the keys on the alphabet rows are remapped to new functions.
+`,`, `.`, and `capslock` are trigger keys — hold one down and the alphabet rows remap to new functions.
 
-* **To use Caps Lock normally**: Press `capslock` twice within 0.2 seconds.
+- **To use Caps Lock normally:** press it twice within 0.2 seconds.
 
-### **🖱️ Mouse Mode (Linux Python Only)**
+### 🖱️ Mouse Mode (Linux Python Only)
 
-*Note: Mouse mode is currently only available in the Python version of the script.*
+*Currently only available in the Python version.*
 
-A dedicated mode to control your cursor without leaving the keyboard.
+- **Toggle ON/OFF:** hold `.`, tap `u`, release both.
 
-* **Toggle ON/OFF**: Press `.` (Dot) + `u`
-*(Hold Dot, tap U, release both)*
-
-**Once Mouse Mode is Active:**
+**While active:**
 
 | Function | Key | Description |
-| --- | --- | --- |
-| **Movement** | `e`, `s`, `d`, `f` | Up, Left, Down, Right (Matches Arrow/Vim positions) |
-| **Clicks** | `j` | **Left Click** |
-|  | `k` | **Right Click** |
-| **Scrolling** | Hold `m` | Turns `e/s/d/f` into **Scroll** Up/Left/Down/Right |
-| **Speed** | (None) | Normal Speed |
-|  | Hold `.` | Medium Speed / Medium Scroll |
-|  | Hold `Space` | **Turbo Speed** / Fast Scroll |
+|---|---|---|
+| Movement | `e` `s` `d` `f` | Up / Left / Down / Right |
+| Left Click | `j` | |
+| Right Click | `k` | |
+| Scrolling | Hold `m` | Turns `e/s/d/f` into Scroll Up/Left/Down/Right |
+| Speed: Normal | (default) | |
+| Speed: Medium | Hold `.` | |
+| Speed: Fast | Hold `Space` | |
 
-*current mouse settings*
-
+Current settings (in `key_remapper.py`):
 ```
-# Mouse Settings - Speeds (Supports decimals/floats now!)
 MOUSE_SPEED_NORMAL = 1
-MOUSE_SPEED_MEDIUM = 12     # Dot held
-MOUSE_SPEED_FAST = 25       # Space held
+MOUSE_SPEED_MEDIUM = 12    # Dot held
+MOUSE_SPEED_FAST = 25      # Space held
 
 SCROLL_SPEED_NORMAL = 0.2
-SCROLL_SPEED_MEDIUM = 3     # Dot held
-SCROLL_SPEED_FAST = 10       # Space held
-
+SCROLL_SPEED_MEDIUM = 3    # Dot held
+SCROLL_SPEED_FAST = 10     # Space held
 ```
 
----
+### Core Remappings (Global)
 
-### **Core Remappings (Global)**
+#### Hold `Capslock` — Symbols
+`y`→`$` `u`→`>` `i`→`=` `o`→`\` `p`→`!`
+`h`→`<` `j`→`(` `k`→`+` `l`→`*` `;`→`-`
+`n`→`_` `m`→`)` `[`→`?`
 
-#### **Hold `Capslock` Layer (Symbols)**
+#### Hold `,` — Symbols
+`q`→`~` `w`→`.` `e`→`,` `r`→`&` `t`→`^`
+`a`→`@` `s`→`%` `d`→`{` `f`→`[` `g`→`'`
+`z`→`#` `x`→`` ` `` `c`→`}` `v`→`]` `b`→`|`
 
-* `y` → `$` | `u` → `>` | `i` → `=` | `o` → `\` | `p` → `!`
-* `h` → `<` | `j` → `(` | `k` → `+` | `l` → `*` | `;` → `-`
-* `n` → `_` | `m` → `)` | `[` → `?`
+#### Hold `.` — Navigation & Editing
+`k`→Enter · `j`→Backspace · `i`→Shift+Enter · `m`→Ctrl+Backspace (delete word) · `n`→Delete
+`e`→Up · `d`→Down · `s`→Left · `f`→Right
+`r`→Ctrl+Right (next word) · `w`→Ctrl+Left (previous word)
 
-#### **Hold `,` Layer (Symbols)**
+#### Hold `.` then `,` — Numpad
+*Hold `.` first, then also hold `,` to activate.*
+`w`→`7` `e`→`8` `r`→`9`
+`s`→`4` `d`→`5` `f`→`6` `g`→`0`
+`x`→`1` `c`→`2` `v`→`3`
+`a`→`,` `z`→`.`
 
-* `q` → `~` | `w` → `.` | `e` → `,` | `r` → `&` | `t` → `^`
-* `a` → `@` | `s` → `%` | `d` → `{` | `f` → `[` | `g` → `'`
-* `z` → `#` | `x` → ` | `c` → `}` | `v` → `]` | `b` → `|`
-
-#### **Hold `.` Layer (Navigation & Editing)**
-
-* `k` → `Enter`
-* `j` → `Backspace`
-* `i` → `Shift` + `Enter`
-* `m` → `Ctrl` + `Backspace` (delete word)
-* `n` → `Delete`
-* `e` → `Up Arrow`
-* `d` → `Down Arrow`
-* `s` → `Left Arrow`
-* `f` → `Right Arrow`
-* `r` → `Ctrl` + `Right Arrow` (next word)
-* `w` → `Ctrl` + `Left Arrow` (previous word)
-
-#### **Hold `.` then hold `,` Layer (Numpad)**
-
-*First hold down `.`, and while holding it, also hold down `,` to activate this layer.*
-
-* `w` → `7` | `e` → `8` | `r` → `9`
-* `s` → `4` | `d` → `5` | `f` → `6` | `g` → `0`
-* `x` → `1` | `c` → `2` | `v` → `3`
-* `a` → `,` | `z` → `.`
-
-### **✨ Linux Extras**
-
-* `Capslock` + `f` → `Alt` + `Tab` (App Switcher)
-* `Capslock` + `d` → `Alt` + `Shift` + `Tab` (App Switcher Reverse)
-* `.` + `h` → **Delete Whole Line**
-
-```
+### ✨ Linux Extras
+- `Capslock` + `f` → Alt+Tab (App Switcher)
+- `Capslock` + `d` → Alt+Shift+Tab (App Switcher Reverse)
+- `.` + `h` → Delete Whole Line
